@@ -1,0 +1,104 @@
+<html>
+<title>Web Page Design</title>
+<head>
+<script>
+
+function getCoords(str){
+    var coords = {}
+    coords["long"] = str.substring(str.indexOf("<")+1,str.indexOf(">"))
+    str = str.substring(str.indexOf(">")+1)
+    coords["lat"] =  str.substring(str.indexOf("<")+1,str.indexOf(">"))
+    str = str.substring(str.indexOf(">"))
+    return coords
+}
+
+function getLocation(str){debugger
+    var xyz = {}
+    xyz["name"] =  str.substring(str.indexOf("<")+1,str.indexOf(">"))
+    str = str.substring(str.indexOf(">")+1)
+    xyz["coords"] = getCoords(str.substring(str.indexOf("<")+1))
+    return xyz
+}
+
+function getName(str){debugger
+    var na = {}
+    na["first"] = str.substring(str.indexOf("<")+1,str.indexOf(">"))
+    str = str.substring(str.indexOf(">")+1)
+    na["middle"] = str.substring(str.indexOf("<")+1,str.indexOf(">"))
+    str = str.substring(str.indexOf(">")+1)
+    na["last"] = str.substring(str.indexOf("<")+1,str.indexOf(">"))
+    return na
+}
+
+function parseProfile(str){debugger
+    var profile = {}
+    profile['id'] = str.substring(0,str.indexOf("|"))
+    console.log(profile)
+    str = str.substring(str.indexOf("|")+1)
+    profile["name"] = getName(str.substring(0,str.indexOf("|")))
+    str = str.substring(str.indexOf("|")+1)
+   // console.log(str.substring(0,str.indexOf("|")))
+    profile["location"] = getLocation(str.substring(0,str.indexOf("|")))
+    str = str.substring(str.indexOf("|")+1)
+
+    if(str.includes("**followers|")){debugger
+	    profile["imageId"] = str.substring(0,str.indexOf("**followers|"))
+	    str = str.substring(str.indexOf("**followers|"))
+        console.log(str + "testt")
+	}
+	else if(str.includes("@@")){
+	    profile["imageId"] = str.substring(0,str.indexOf("@@"))
+	    str = str.substring(str.indexOf("@@"))
+	}else{
+		profile["imageId"] = str
+		str = ""
+	}
+    if(str){
+        var arr = []
+        str = str.substring(str.indexOf("|")+1)
+
+    	if(str.includes("@@|")){
+            follower = str.substring(0,str.indexOf("@@|"))
+        console.log(follower+ "follower string")
+        }
+    		
+    	else{
+    		follower = str
+            console.log(follower+"second follower" )
+    		str = ""
+    	}
+
+        arr.push(parseProfile(follower))
+    	 {
+        	if(str.includes("@@|"))
+        		str = str.substring(str.indexOf("@@|")+3)
+    		if(str.includes("@@|"))
+				follower = str.substring(0,str.indexOf("@@|"))
+    		else{
+				follower = str
+				str = ""
+    		}
+	        temp = parseProfile(follower)
+	        arr.push(temp)
+	        
+        }
+	    	
+    	profile["followers"] = arr
+    }
+    // console.log(profile)
+    return profile
+}
+
+function buildJSON() {
+    var str = "profile|73241232|<Aamir><Hussain><Khan>|<Mumbai><<72.872075><19.075606>>|73241232.jpg**followers|54543342|<Anil><><Kapoor>|<Delhi><<23.23><12.07>>|54543342.jpg@@|12311334|<Amit><><Bansal>|<Bangalore><<><>>|12311334.jpg"
+    str = str.substring(str.indexOf("|")+1)
+   console.log(str)
+   var res = parseProfile(str);
+   console.log(res);
+}
+buildJSON();
+</script>
+</head>
+<body>
+</body>
+</html>
